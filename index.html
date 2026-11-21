@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outlook + Copilot · Más allá del correo</title>
+<style>
+:root{
+  --bg:#06122b; --bg2:#0b1f4a; --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.14);
+  --txt:#f3f7ff; --mut:#9db3dc; --blue:#2b9bff; --cyan:#4fd8ff; --violet:#a259ff; --pink:#ff5c8a; --amber:#ffb84d; --green:#3ddc97;
+  --grad:linear-gradient(100deg,#4fd8ff,#2b7bff 40%,#a259ff 70%,#ff5c8a);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#020a1c;overflow:hidden;font-family:"Segoe UI","Inter",system-ui,sans-serif;color:var(--txt)}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;background:radial-gradient(1200px 800px at 85% 10%,#14357a55,transparent 60%),radial-gradient(900px 700px at 0% 100%,#4b1fa044,transparent 60%),linear-gradient(160deg,var(--bg),var(--bg2));overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;animation:float 14s ease-in-out infinite alternate}
+.b1{width:520px;height:520px;background:#2b7bff;left:-120px;top:-100px}
+.b2{width:460px;height:460px;background:#a259ff;right:-80px;bottom:-120px;animation-delay:-5s}
+@keyframes float{to{transform:translate(70px,50px) scale(1.15)}}
+.slide{position:absolute;inset:0;padding:96px 120px 110px;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+.slide.active{opacity:1;visibility:visible}
+.eyebrow{font-size:26px;letter-spacing:.22em;font-weight:700;color:var(--cyan);text-transform:uppercase}
+h1,h2{font-weight:800;letter-spacing:-.02em;line-height:1.05}
+h2{font-size:84px;margin-top:18px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:36px;color:var(--mut);margin-top:22px}
+.foot{position:absolute;left:120px;right:120px;bottom:40px;display:flex;justify-content:space-between;font-size:22px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;backdrop-filter:blur(8px)}
+.ico{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(140deg,#2b7bff,#a259ff)}
+.ico svg{width:46px;height:46px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.note{font-size:26px;color:var(--mut)}
+
+/* animation helpers: children animate each time the slide becomes active */
+.a{opacity:0}
+.active .a{animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0)*.14s + .15s)}
+.active .pop{animation-name:pop}
+.active .fade{animation-name:fade}
+.active .left{animation-name:fromleft}
+@keyframes rise{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes fromleft{from{opacity:0;transform:translateX(-80px)}to{opacity:1;transform:none}}
+
+/* 1 portada */
+.s1{display:flex;align-items:center}
+.s1 .l{flex:1}
+.s1 h1{font-size:170px;margin:26px 0 30px}
+.s1 .r{width:760px;position:relative}
+.s1 .r img{width:100%;border-radius:40px;animation:bob 6s ease-in-out infinite alternate;box-shadow:0 40px 100px #000a}
+@keyframes bob{to{transform:translateY(-22px) rotate(1.5deg)}}
+.chip{display:inline-block;margin-top:44px;padding:14px 30px;border:1px solid var(--line);border-radius:99px;font-size:26px;color:var(--mut)}
+
+/* 2 problema */
+.trio{display:flex;gap:40px;margin-top:70px}
+.trio .card{flex:1;padding:44px}
+.trio h3{font-size:46px;margin:28px 0 12px}
+.trio p{font-size:29px;color:var(--mut);line-height:1.35}
+.ask{margin-top:56px;font-size:36px;color:var(--amber);font-weight:600}
+.mail{position:relative}
+.mail .dot{position:absolute;top:-10px;right:-10px;min-width:34px;height:34px;border-radius:99px;background:var(--pink);font-size:20px;font-weight:800;display:grid;place-items:center;padding:0 8px}
+
+/* 3 impacto */
+.s3{display:grid;place-items:center;padding:0;background:#eaf4fc}
+.s3 .imgwrap{position:absolute;inset:0}
+.s3 img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);animation:zoomout 2.2s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes zoomout{to{transform:scale(1)}}
+.s3 .t{position:absolute;left:0;right:0;top:70px;text-align:center;font-size:76px;font-weight:800;color:#0b2a5b}
+
+/* 4 qué es */
+.flow{display:flex;align-items:center;gap:26px;margin-top:64px}
+.flow .card{flex:1;padding:40px;text-align:center}
+.flow h3{font-size:42px;margin:24px 0 10px}
+.flow p{font-size:27px;color:var(--mut);line-height:1.35}
+.flow .ico{margin:0 auto}
+.arrow{font-size:60px;color:var(--cyan);animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateX(12px)}}
+.deps{margin-top:54px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.deps b{font-size:28px;color:var(--amber);margin-right:8px}
+.pill{padding:12px 28px;border-radius:99px;background:#ffb84d22;border:1px solid #ffb84d66;font-size:26px}
+
+/* 5 redacción */
+.s5 .wrap{display:flex;gap:70px;margin-top:50px}
+.steps{width:640px;display:flex;flex-direction:column;gap:26px}
+.step{display:flex;gap:26px;align-items:flex-start;padding:26px 30px}
+.num{flex:none;width:62px;height:62px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:32px;font-weight:800;color:#fff}
+.step h3{font-size:36px}.step p{font-size:25px;color:var(--mut);margin-top:6px;line-height:1.3}
+.win{flex:1;border-radius:26px;background:#fff;color:#1a2a44;box-shadow:0 40px 100px #000a;overflow:hidden;display:flex;flex-direction:column}
+.win .bar{background:#0f6cbd;color:#fff;padding:18px 28px;font-size:26px;font-weight:600;display:flex;justify-content:space-between}
+.win .body{padding:30px 34px;display:flex;flex-direction:column;gap:22px;flex:1}
+.prompt{background:linear-gradient(100deg,#e5f3ff,#f1e7ff);border-radius:18px;padding:20px 26px;font-size:25px;line-height:1.4;min-height:116px;border:1px solid #c9dcf5}
+.prompt .tag{font-weight:800;color:#7a3df0;display:block;margin-bottom:6px;font-size:22px}
+.draft{font-size:25px;line-height:1.5;white-space:pre-wrap;min-height:230px;border-left:5px solid #2b7bff;padding-left:22px;color:#22344f}
+.cursor{display:inline-block;width:3px;height:1em;background:#2b7bff;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{padding:12px 24px;border-radius:99px;background:#eef3fa;border:1px solid #cfdaeb;font-size:22px;font-weight:600;color:#0f4c8a;opacity:.35;transition:.5s}
+.btns.on .btn{opacity:1}
+.btns.on .btn:nth-child(2){transition-delay:.2s}.btns.on .btn:nth-child(3){transition-delay:.4s}
+.cap{font-size:20px;color:#7b8aa3;margin-top:auto}
+
+/* 6 busca */
+.three{display:flex;gap:40px;margin-top:64px}
+.three .card{flex:1;padding:44px}
+.three h3{font-size:46px;margin:26px 0 20px}
+.q{font-size:29px;line-height:1.35;color:var(--cyan);font-style:italic;background:#4fd8ff14;border-radius:18px;padding:20px 24px}
+.three p{font-size:26px;color:var(--mut);margin-top:22px;line-height:1.4}
+.lock{margin-top:54px;font-size:26px;color:var(--mut);display:flex;gap:14px;align-items:center}
+
+/* 7 organiza */
+.s7 .wrap{display:flex;gap:60px;margin-top:44px}
+.inbox{flex:1.15;background:#fff;color:#1a2a44;border-radius:26px;overflow:hidden;box-shadow:0 40px 100px #000a}
+.inbox .bar{background:#0f6cbd;color:#fff;padding:18px 28px;font-size:25px;font-weight:600}
+.row{display:flex;align-items:center;gap:22px;padding:22px 28px;border-bottom:1px solid #e3eaf5}
+.row b{display:block;font-size:26px}.row small{font-size:21px;color:#5b6c87}
+.prio{flex:none;width:104px;text-align:center;padding:8px 0;border-radius:99px;font-size:21px;font-weight:800;color:#fff}
+.alta{background:#e5484d}.normal{background:#e8a317}.baja{background:#8a97ad}
+.inbox .cap{padding:14px 28px}
+.active .row{opacity:0;animation:fromleft .7s forwards;animation-delay:calc(var(--i)*.35s + .6s)}
+.caps{flex:.85;display:flex;flex-direction:column;gap:24px}
+.caps .card{padding:28px 32px;display:flex;gap:26px;align-items:center}
+.caps h3{font-size:38px}.caps p{font-size:25px;color:var(--mut);margin-top:4px;line-height:1.3}
+.caps .ico{flex:none;width:76px;height:76px}
+
+/* 8 demo */
+.live{display:inline-flex;align-items:center;gap:14px}
+.live i{width:18px;height:18px;border-radius:50%;background:#ff3b4d;box-shadow:0 0 0 0 #ff3b4daa;animation:ping 1.6s infinite}
+@keyframes ping{to{box-shadow:0 0 0 22px #ff3b4d00}}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:56px;position:relative}
+.tl .st{padding:30px 34px;display:flex;gap:24px;align-items:flex-start;opacity:.28;transform:scale(.97);transition:.6s;border-color:var(--line)}
+.tl .st.on{opacity:1;transform:none;border-color:var(--cyan);box-shadow:0 0 40px #4fd8ff33}
+.tl h3{font-size:34px}.tl p{font-size:24px;color:var(--mut);margin-top:8px;line-height:1.35}
+.pbar{height:8px;border-radius:9px;background:#ffffff18;margin-top:50px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--grad);transition:width .7s ease}
+
+body.vid,body.vid html,html:has(body.vid){background:#000}body.vid #stage{background:#000}body.vid .blob{opacity:0}#stage,.blob{transition:background .4s,opacity .4s}
+.svid{padding:0;background:#000}.svid video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+/* 10 cierre */
+.s10{text-align:center}
+.s10 h2{font-size:88px}
+.s10 .three{justify-content:center;margin-top:52px}
+.s10 .card{padding:36px;text-align:center}
+.s10 .ico{margin:0 auto}
+.s10 h3{font-size:42px;margin:22px 0 6px}.s10 .card p{font-size:26px;color:var(--mut);margin:0}
+.quote{margin-top:56px;font-size:46px;font-weight:700}
+.thanks{margin-top:34px;font-size:34px;color:var(--mut)}
+
+/* UI */
+#prog{position:fixed;left:0;top:0;height:5px;background:var(--grad);width:0;transition:width .4s;z-index:9}
+#hud{position:fixed;right:18px;bottom:14px;display:flex;gap:8px;z-index:9;opacity:0;transition:.3s}
+body:hover #hud{opacity:.85}
+#hud button{background:#0d234fcc;color:#fff;border:1px solid #ffffff33;border-radius:10px;padding:8px 14px;font-size:15px;cursor:pointer}
+#hud button:hover{background:#2b7bff}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<div id="stage">
+<div class="blob b1"></div><div class="blob b2"></div>
+
+<!-- 1 -->
+<section class="slide s1" data-n="1">
+  <div class="l">
+    <div class="eyebrow a fade" style="--i:0">Club Microsoft · Workshop</div>
+    <h1 class="a" style="--i:1">Outlook<br><span class="grad">+ Copilot</span></h1>
+    <p class="sub a" style="--i:3;max-width:900px">Más allá del correo: inteligencia artificial para tu productividad</p>
+  </div>
+  <div class="r a pop" style="--i:2"><img src="Copilot-Outlook-Header.webp" alt="Outlook y Copilot"></div>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-n="2">
+  <div class="eyebrow a" style="--i:0">El problema</div>
+  <h2 class="a" style="--i:1">Tu bandeja trabaja <span class="grad">a tiempo completo</span></h2>
+  <p class="sub a" style="--i:2">Buscar, leer, responder… y volver a empezar.</p>
+  <div class="trio">
+    <div class="card a" style="--i:3"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg></div><h3>Buscar</h3><p>¿Dónde estaba el correo con la fecha de entrega?</p></div>
+    <div class="card a" style="--i:4"><div class="ico mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="dot" id="unread">0</span></div><h3>Leer</h3><p>Un hilo con decenas de mensajes y llegas tarde a la conversación.</p></div>
+    <div class="card a" style="--i:5"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></div><h3>Responder</h3><p>Redactar, ajustar el tono y revisar… una y otra vez.</p></div>
+  </div>
+  <p class="ask a" style="--i:7">✋ Levanta la mano: ¿cuántos correos sin leer tienes ahora mismo?</p>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>02 / 10</span></div>
+</section>
+
+<!-- 3 -->
+<section class="slide s3" data-n="3">
+  <div class="imgwrap"><img src="Copilot-for-Outlook.webp" alt="Copilot + Outlook"></div>
+  <div class="t a" style="--i:4">Te presento a…</div>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-n="4">
+  <div class="eyebrow a" style="--i:0">¿Qué es Copilot en Outlook?</div>
+  <h2 class="a" style="--i:1">Un asistente de IA <span class="grad">dentro de tu correo</span></h2>
+  <div class="flow">
+    <div class="card a" style="--i:2"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></div><h3>Tu contexto</h3><p>Correos, calendario y archivos que tu cuenta puede ver.</p></div>
+    <div class="arrow a fade" style="--i:3">➜</div>
+    <div class="card a" style="--i:4"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg></div><h3>Copilot</h3><p>Entiende lo que pides en lenguaje natural.</p></div>
+    <div class="arrow a fade" style="--i:5">➜</div>
+    <div class="card a" style="--i:6"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div><h3>Tú decides</h3><p>Borradores, resúmenes y sugerencias que tú revisas.</p></div>
+  </div>
+  <div class="deps a" style="--i:8"><b>Ojo: no todo está en todas las cuentas. Depende de:</b><span class="pill">Licencia de Copilot</span><span class="pill">Versión de Outlook</span><span class="pill">Ajustes de tu organización</span></div>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>04 / 10</span></div>
+</section>
+
+<!-- 5 -->
+<section class="slide s5" data-n="5">
+  <div class="eyebrow a" style="--i:0">Redacción inteligente</div>
+  <h2 class="a" style="--i:1">Escribe con <span class="grad">una sola instrucción</span></h2>
+  <div class="wrap">
+    <div class="steps">
+      <div class="card step a left" style="--i:2"><div class="num">1</div><div><h3>Pide en una línea</h3><p>Describe qué correo necesitas y a quién va.</p></div></div>
+      <div class="card step a left" style="--i:3"><div class="num">2</div><div><h3>Revisa el borrador</h3><p>Copilot lo escribe usando el contexto del hilo.</p></div></div>
+      <div class="card step a left" style="--i:4"><div class="num">3</div><div><h3>Ajusta el tono</h3><p>Pide más formal o más breve; el coaching revisa claridad y tono.</p></div></div>
+    </div>
+    <div class="win a pop" style="--i:3">
+      <div class="bar"><span>✉ Nuevo mensaje</span><span>✦ Copilot</span></div>
+      <div class="body">
+        <div class="prompt"><span class="tag">✦ Copilot</span><span id="typ1"></span></div>
+        <div class="draft" id="typ2"></div>
+        <div class="btns" id="btns"><span class="btn">Más formal</span><span class="btn">Más breve</span><span class="btn">Coaching de tono</span></div>
+        <div class="cap">Ilustración de ejemplo, no es una captura real</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>05 / 10</span></div>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-n="6">
+  <div class="eyebrow a" style="--i:0">Busca y comprende</div>
+  <h2 class="a" style="--i:1">Pregunta, <span class="grad">no rebusques</span></h2>
+  <div class="three">
+    <div class="card a" style="--i:2"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg></div><h3>Busca</h3><div class="q">«¿Qué me escribió Carlos sobre el presupuesto?»</div><p>Encuentra correos e información relacionados con tu pregunta.</p></div>
+    <div class="card a" style="--i:3"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div><h3>Comprende</h3><div class="q">«Resume este hilo y dime qué falta por decidir.»</div><p>También con el botón Resumir, arriba de la conversación.</p></div>
+    <div class="card a" style="--i:4"><div class="ico"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg></div><h3>Localiza</h3><div class="q">«¿Dónde quedó el PDF de la propuesta?»</div><p>Puede apoyarse en archivos y chats que ya puedes ver.</p></div>
+  </div>
+  <p class="lock a" style="--i:6">🔒 Solo usa lo que tu cuenta ya tiene permiso de ver. Disponibilidad según licencia y versión.</p>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>06 / 10</span></div>
+</section>
+
+<!-- 7 -->
+<section class="slide s7" data-n="7">
+  <div class="eyebrow a" style="--i:0">Organiza tu bandeja</div>
+  <h2 class="a" style="--i:1">Que Copilot <span class="grad">ponga orden</span></h2>
+  <div class="wrap">
+    <div class="inbox a pop" style="--i:2">
+      <div class="bar">Bandeja de entrada, ordenada por prioridad</div>
+      <div class="row" style="--i:0"><span class="prio alta">Alta</span><div><b>Prof. Mendoza · Entrega del informe</b><small>Motivo: pide respuesta antes del viernes</small></div></div>
+      <div class="row" style="--i:1"><span class="prio alta">Alta</span><div><b>Coordinación · Confirmar asistencia</b><small>Motivo: requiere tu confirmación</small></div></div>
+      <div class="row" style="--i:2"><span class="prio normal">Normal</span><div><b>Club · Agenda de la semana</b><small>Motivo: informativo, sin fecha límite</small></div></div>
+      <div class="row" style="--i:3"><span class="prio baja">Baja</span><div><b>Boletín de promociones</b><small>Motivo: mensaje masivo</small></div></div>
+      <div class="cap" style="color:#7b8aa3;font-size:20px">Ilustración de ejemplo, no es una captura real</div>
+    </div>
+    <div class="caps">
+      <div class="card a left" style="--i:3"><div class="ico"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></div><div><h3>Prioriza</h3><p>Marca alta, normal o baja y explica el porqué.</p></div></div>
+      <div class="card a left" style="--i:4"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div><div><h3>Crea reglas</h3><p>Descríbelas con tus palabras, sin menús complicados.</p></div></div>
+      <div class="card a left" style="--i:5"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div><h3>Agenda</h3><p>Propone una reunión desde un hilo de correo.</p></div></div>
+    </div>
+  </div>
+  <p class="note a" style="--i:7;margin-top:26px">Prioridad y reglas: según licencia, versión e idioma.</p>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>07 / 10</span></div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-n="8">
+  <div class="eyebrow a live" style="--i:0"><i></i>Demostración en vivo</div>
+  <h2 class="a" style="--i:1">Un lunes, varios correos, <span class="grad">una decisión</span></h2>
+  <p class="sub a" style="--i:2">Del caos de la bandeja a la respuesta enviada.</p>
+  <div class="tl" id="tl">
+    <div class="card st"><div class="num">1</div><div><h3>Llegan los correos</h3><p>Varios mensajes nuevos, uno importante.</p></div></div>
+    <div class="card st"><div class="num">2</div><div><h3>Busca la conversación</h3><p>Pregunta: «¿Qué dijo Marta sobre la fecha?»</p></div></div>
+    <div class="card st"><div class="num">3</div><div><h3>Resume el hilo</h3><p>Puntos clave y pendientes en segundos.</p></div></div>
+    <div class="card st"><div class="num">4</div><div><h3>Analiza el adjunto</h3><p>Resume Word, PowerPoint o PDF compatibles.</p></div></div>
+    <div class="card st"><div class="num">5</div><div><h3>Redacta la respuesta</h3><p>Borrador con Copilot y coaching de tono.</p></div></div>
+    <div class="card st"><div class="num">6</div><div><h3>Organiza el seguimiento</h3><p>Prioridad, regla o reunión desde el hilo.</p></div></div>
+  </div>
+  <div class="pbar"><i id="pfill"></i></div>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>08 / 10</span></div>
+</section>
+
+<!-- 9 video -->
+<section class="slide svid" data-n="9">
+  <video id="demoVid" src="copilot-outlook-demo-horizontal.mp4" playsinline controls preload="auto"></video>
+</section>
+
+<!-- 10 -->
+<section class="slide s10" data-n="10">
+  <div class="eyebrow a" style="--i:0">Conclusión</div>
+  <h2 class="a" style="--i:1">El correo se convierte en <span class="grad">productividad inteligente</span></h2>
+  <div class="three">
+    <div class="card a pop" style="--i:2;flex:none;width:420px"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg></div><h3>Redacta</h3><p>Borradores y tono</p></div>
+    <div class="card a pop" style="--i:3;flex:none;width:420px"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg></div><h3>Comprende</h3><p>Búsqueda y resúmenes</p></div>
+    <div class="card a pop" style="--i:4;flex:none;width:420px"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div><h3>Organiza</h3><p>Prioridad y seguimiento</p></div>
+  </div>
+  <p class="quote a" style="--i:6">La IA no te quita el trabajo: <span class="grad">te quita lo repetitivo.</span></p>
+  <p class="thanks a" style="--i:7">Gracias · ¿Preguntas?</p>
+  <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>10 / 10</span></div>
+</section>
+</div>
+
+<div id="hud"><button id="prev">◀</button><button id="next">▶</button><button id="fs">⛶</button></div>
+
+<script>
+const stage=document.getElementById('stage'),slides=[...document.querySelectorAll('.slide')],prog=document.getElementById('prog');
+let cur=0,timers=[];
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);fit();
+const later=(f,t)=>timers.push(setTimeout(f,t));
+function clear(){timers.forEach(clearTimeout);timers=[]}
+function type(el,text,speed,done){let i=0;el.innerHTML='<span class="cursor"></span>';(function step(){if(i<=text.length){el.innerHTML=text.slice(0,i).replace(/</g,'&lt;')+'<span class="cursor"></span>';i++;later(step,speed)}else{el.innerHTML=text.replace(/</g,'&lt;');done&&done()}})()}
+const hooks={
+ 9(){const v=document.getElementById('demoVid');v.currentTime=0;v.muted=false;const p=v.play();p&&p.catch(()=>{v.muted=true;v.play().catch(()=>{})})},
+ 2(){const u=document.getElementById('unread');let n=0;(function t(){n+=Math.ceil(Math.random()*9);if(n>=47)n=47;u.textContent=n;if(n<47)later(t,60)})()},
+ 5(){const a=document.getElementById('typ1'),b=document.getElementById('typ2'),btns=document.getElementById('btns');a.textContent='';b.textContent='';btns.classList.remove('on');
+  later(()=>type(a,'«Escribe un correo a la profesora Mendoza pidiendo una prórroga de 2 días para el informe. Tono respetuoso.»',22,()=>later(()=>type(b,'Estimada profesora Mendoza:\nEspero que se encuentre muy bien. Le escribo para solicitarle, con todo respeto, una prórroga de dos días para entregar el informe del proyecto.\nQuedo a la espera de su respuesta. Muchas gracias.',16,()=>btns.classList.add('on')),400)),1200)},
+ 8(){const st=[...document.querySelectorAll('#tl .st')],f=document.getElementById('pfill');st.forEach(s=>s.classList.remove('on'));f.style.width='0';
+  st.forEach((s,i)=>later(()=>{s.classList.add('on');f.style.width=((i+1)/st.length*100)+'%'},1300+i*1100))}
+};
+function go(n){n=Math.max(0,Math.min(slides.length-1,n));clear();document.querySelectorAll('video').forEach(v=>v.pause());
+ slides[cur].classList.remove('active');cur=n;
+ void slides[cur].offsetWidth;slides[cur].classList.add('active');
+ prog.style.width=((cur+1)/slides.length*100)+'%';history.replaceState(null,'','#'+(cur+1));
+ document.body.classList.toggle('vid',cur===8);hooks[cur+1]&&hooks[cur+1]()}
+const next=()=>go(cur+1),prev=()=>go(cur-1);
+addEventListener('keydown',e=>{
+ if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();next()}
+ else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev()}
+ else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+ else if(e.key==='f'||e.key==='F')tfs()});
+function tfs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.getElementById('fs').onclick=tfs;
+let sx=null;addEventListener('touchstart',e=>sx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(sx===null)return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)d<0?next():prev();sx=null});
+go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
