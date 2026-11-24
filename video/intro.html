@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Copilot en Outlook · video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden;font-family:Inter,"Segoe UI",system-ui,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;background:#fbfdff;overflow:hidden;color:#1b1f2a}
+.blob{position:absolute;border-radius:50%;filter:blur(110px);background:#7cc0ff;opacity:.55}
+[data-in]{opacity:0}
+.scene{position:absolute;inset:0}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.logo{width:120px;height:120px;background:url(copilot-logo.webp) center/contain no-repeat;flex:none}
+.logo.sm{width:40px;height:40px}
+.grad{background:linear-gradient(100deg,#2b9bff,#7c3aed 55%,#f43f5e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.big{font-size:112px;font-weight:800;letter-spacing:-.03em}
+.big em{font-weight:400}
+.mid{font-size:92px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.subt{font-size:34px;color:#6b7280;margin-top:18px}
+.ic{display:inline-flex;align-items:center;justify-content:center}
+.ic svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* gancho */
+.count{font-size:300px;font-weight:900;letter-spacing:-.05em;line-height:1}
+.words span{display:inline-block;margin:0 14px}
+.slam{display:flex;gap:50px;font-size:96px;font-weight:800;letter-spacing:-.03em}
+.slam div{display:flex;align-items:center;gap:22px}
+.slam .ic{width:100px;height:100px;border-radius:26px;color:#fff;font-size:54px}
+.ms{display:inline-flex;align-items:center;gap:16px;font-family:"Segoe UI",Inter,sans-serif;font-weight:600;color:#737373;font-size:44px}
+.ms i{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:42px;height:42px}
+.ms i b:nth-child(1){background:#f25022}.ms i b:nth-child(2){background:#7fba00}.ms i b:nth-child(3){background:#00a4ef}.ms i b:nth-child(4){background:#ffb900}
+/* rótulo de sección */
+.cap{position:absolute;left:50%;top:34px;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #e5eaf2;box-shadow:0 14px 40px #1d4ed822;border-radius:99px;padding:12px 30px 12px 14px;font-size:36px;font-weight:700;white-space:nowrap}
+.cap .ic{width:56px;height:56px;border-radius:50%;color:#fff;font-size:28px}
+.cap small{font-size:24px;font-weight:500;color:#6b7280}
+.bl{background:linear-gradient(135deg,#3aa0ff,#2563eb)} .vi{background:linear-gradient(135deg,#b07cff,#7c3aed)} .pk{background:linear-gradient(135deg,#ff8fa3,#e11d48)}
+/* ventana Outlook simulada */
+#cam{position:absolute;inset:0;transform-origin:960px 540px}
+.win{position:absolute;left:180px;top:140px;width:1560px;height:880px;background:#fff;border-radius:22px;box-shadow:0 40px 120px #1d4ed833,0 4px 20px #0001;overflow:hidden;border:1px solid #e5eaf2}
+.bar{height:62px;background:#0f6cbd;display:flex;align-items:center;gap:18px;padding:0 24px;color:#fff;font-weight:600;font-size:22px}
+.olk{width:34px;height:34px;border-radius:8px;background:#fff;color:#0f6cbd;display:grid;place-items:center;font-weight:800;font-size:22px}
+.search{margin-left:60px;width:520px;height:38px;border-radius:8px;background:#ffffff33;font-weight:400;font-size:18px;display:flex;align-items:center;gap:10px;padding-left:16px;color:#e8f1ff}
+.cols{display:flex;height:calc(100% - 62px)}
+.nav{width:270px;background:#f5f7fb;padding:22px 14px;font-size:20px;color:#374151}
+.nav div{padding:12px 16px;border-radius:10px;display:flex;justify-content:space-between}
+.nav .on{background:#e1ecfb;font-weight:600;color:#0f4c8a}
+.nav span{color:#0f6cbd;font-weight:600}
+.badge{display:inline-block;min-width:44px;text-align:center;border-radius:99px}
+.midc{width:470px;border-right:1px solid #eef1f6;font-size:18px;position:relative}
+.midc h4{padding:20px 22px 12px;font-size:20px;color:#0f6cbd}
+.mail{padding:15px 22px;border-bottom:1px solid #f0f2f6}
+.mail p{color:#6b7280;font-size:16px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail.sel{background:#eaf2fd;border-left:4px solid #0f6cbd}
+.thread{padding:20px 22px}
+.thread h3{font-size:24px;line-height:1.25}
+.cnt{display:inline-block;margin-top:10px;background:#fee2e2;color:#b91c1c;font-weight:700;font-size:16px;border-radius:99px;padding:4px 14px}
+.tm{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:12px;border:1px solid #eef1f6;border-radius:12px;font-size:16px;color:#4b5563}
+.tm b{color:#1f2937;display:block;font-size:17px}
+.av{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px}
+.pane{flex:1;position:relative;background:#fff;display:flex;flex-direction:column;min-width:0}
+.ph{display:flex;align-items:center;gap:12px;padding:16px 26px;font-size:24px;font-weight:700;border-bottom:1px solid #f0f2f6}
+.msgs{flex:1;padding:22px 30px;display:flex;flex-direction:column;justify-content:flex-end;gap:16px;overflow:hidden}
+.hello{font-size:34px;font-weight:600}
+.you{align-self:flex-end;max-width:80%;background:#e1ecfb;color:#0b2a5b;border-radius:18px 18px 4px 18px;padding:14px 20px;font-size:21px;line-height:1.4;flex:none}
+.bot{align-self:flex-start;max-width:94%;background:#f7f8fb;border:1px solid #e8ecf3;border-radius:18px 18px 18px 4px;padding:18px 22px;font-size:20px;line-height:1.5;white-space:pre-wrap;color:#1f2937;flex:none}
+.bot.ok{background:#ecfdf3;border-color:#bbf7d0;color:#14532d;display:flex;gap:10px;align-items:center;white-space:normal}
+.dots i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c3aed;margin-right:6px}
+.chips{display:flex;gap:12px;flex:none}
+.chip{border:1.5px solid #c7d2fe;background:#eef2ff;color:#3730a3;border-radius:99px;padding:10px 20px;font-size:19px;font-weight:600;display:flex;gap:8px;align-items:center}
+.sec{display:flex;gap:14px;margin-top:12px;white-space:normal}
+.sec .ic{width:40px;height:40px;border-radius:12px;color:#fff;font-size:22px;flex:none}
+.sec b{display:block;font-size:20px}
+.sec p{font-size:18px;color:#4b5563;line-height:1.4}
+.res{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid #e5eaf2;border-radius:14px;padding:14px 18px;box-shadow:0 8px 24px #1d4ed814;flex:none;font-size:18px}
+.res b{display:block;font-size:19px}
+.res span{color:#6b7280;font-size:16px;margin-left:auto;white-space:nowrap}
+mark{background:#fde68a;border-radius:4px;padding:0 3px}
+.inp{margin:0 26px 24px;height:70px;border:1.5px solid #d7deea;border-radius:35px;display:flex;align-items:center;padding:0 28px;font-size:21px;color:#111827;flex:none}
+.inp .ph2{color:#9ca3af}
+.caret{display:inline-block;width:2px;height:26px;background:#0f6cbd;vertical-align:middle;margin-left:2px}
+.fly{position:absolute;width:250px;padding:12px 16px;background:#fff;border:1px solid #c7d2fe;border-radius:12px;box-shadow:0 14px 40px #1d4ed844;font-size:15px;color:#374151;opacity:0;z-index:15}
+.fly b{color:#c2410c}
+#cursor{position:absolute;width:40px;height:40px;z-index:20;opacity:0}
+#ripple{position:absolute;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;border:4px solid #7c3aed;opacity:0;z-index:19}
+/* montaje final */
+.pr{position:absolute;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e5eaf2;border-radius:99px;padding:16px 28px;font-size:30px;font-weight:600;box-shadow:0 20px 50px #1d4ed822;white-space:nowrap}
+.pr .ic{color:#7c3aed;font-size:30px}
+/* tema oscuro: fondo azul noche (como la presentación) y Outlook en modo oscuro */
+#stage{background:radial-gradient(1200px 800px at 85% 10%,#14357a88,transparent 60%),radial-gradient(900px 700px at 0% 100%,#4b1fa066,transparent 60%),linear-gradient(160deg,#06122b,#0b1f4a);color:#f3f7ff}
+.blob{background:#2b7bff;opacity:.32}
+#b2{background:#a259ff}
+.grad{background:linear-gradient(100deg,#4fd8ff,#2b7bff 40%,#a259ff 70%,#ff5c8a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subt{color:#9db3dc}
+.ms{color:#d7dce5}
+.cap{background:#0d1b3dee;border-color:#ffffff22;box-shadow:0 14px 40px #0008;color:#fff}
+.cap small{color:#9db3dc}
+.win{background:#1f1f1f;border-color:#3a3a3a;box-shadow:0 40px 120px #000a,0 0 0 1px #ffffff10;top:170px;height:840px}
+.bar{background:#0f548c}
+.nav{background:#1a1a1a;color:#d4d4d4}
+.nav .on{background:#2b3a55;color:#9cc6ff}
+.nav span{color:#6cb8ff}
+.midc{border-right-color:#2e2e2e;background:#1f1f1f;color:#e5e5e5}
+.midc h4{color:#6cb8ff}
+.mail{border-bottom-color:#2a2a2a}
+.mail p{color:#9a9a9a}
+.mail.sel{background:#263449;border-left-color:#3b8eea}
+.thread h3{color:#fff}
+.cnt{background:#4a1d1d;color:#fca5a5}
+.tm{border-color:#333;color:#a8a8a8}
+.tm b{color:#eee}
+.pane{background:#202020;color:#f0f0f0}
+.ph{border-bottom-color:#2e2e2e}
+.you{background:#2b4a7a;color:#eef4ff}
+.bot{background:#2a2a2a;border-color:#3a3a3a;color:#e8e8e8}
+.bot.ok{background:#12301f;border-color:#1f5c38;color:#a7f3c4}
+.dots i{background:#a78bfa}
+.chip{background:#2a2550;border-color:#5a50b8;color:#d4cfff}
+.sec p{color:#b5b5b5}
+.res{background:#262626;border-color:#3a3a3a;box-shadow:0 8px 24px #0006}
+.res span{color:#9a9a9a}
+mark{color:#1b1f2a}
+.inp{border-color:#5a5a5a;color:#fff;background:#2a2a2a}
+.inp .ph2{color:#8f8f8f}
+.caret{background:#6cb8ff}
+.fly{background:#2a2a2a;border-color:#5a50b8;color:#ddd;box-shadow:0 14px 40px #000a}
+.fly b{color:#fb923c}
+.mail .dr{color:#fb923c}
+#ripple{border-color:#a78bfa}
+.pr{background:#0d1b3dee;border-color:#ffffff22;color:#fff;box-shadow:0 20px 50px #0008}
+.pr .ic{color:#a78bfa}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="blob" id="b1" style="width:700px;height:520px;left:-160px;top:-120px"></div>
+  <div class="blob" id="b2" style="width:640px;height:560px;right:-180px;top:180px"></div>
+  <div class="blob" id="b3" style="width:760px;height:480px;left:420px;bottom:-300px"></div>
+
+  <!-- 1 · gancho: la bandeja llena -->
+  <section class="scene" data-in="0" data-out="3.4" data-fx="fade">
+    <div class="center">
+      <div class="count grad" id="count" data-in="0" data-fx="pop">0</div>
+      <div class="subt" style="font-size:48px;color:#f3f7ff;font-weight:600" data-in=".5">correos sin leer.</div>
+      <div class="subt" data-in="1.7">Y siguen llegando…</div>
+    </div>
+  </section>
+
+  <!-- 2 · pregunta -->
+  <section class="scene" data-in="3.5" data-out="5.9" data-fx="fade">
+    <div class="center mid words">
+      <div><span data-in="3.6" data-fx="slam">¿Y</span><span data-in="3.8" data-fx="slam">si</span><span data-in="4.0" data-fx="slam">tu</span><span data-in="4.2" data-fx="slam">correo</span></div>
+      <div><span data-in="4.5" data-fx="slam">trabajara</span><span data-in="4.8" data-fx="slam" class="grad">por ti?</span></div>
+    </div>
+  </section>
+
+  <!-- 3 · logo -->
+  <section class="scene" data-in="6.0" data-out="8.2" data-fx="fade">
+    <div class="center">
+      <div class="logo" data-in="6.1" data-fx="spin" style="width:170px;height:170px"></div>
+      <div class="big" data-in="6.6" style="margin-top:30px">Copilot <em>en Outlook</em></div>
+      <div class="ms" data-in="7.1" style="margin-top:26px"><i><b></b><b></b><b></b><b></b></i>Microsoft</div>
+    </div>
+  </section>
+
+  <!-- 4 · tres verbos -->
+  <section class="scene" data-in="8.3" data-out="10.2" data-fx="fade">
+    <div class="center">
+      <div class="slam">
+        <div data-in="8.4" data-fx="slam"><span class="ic bl" data-ic="pen"></span>Redacta.</div>
+        <div data-in="8.9" data-fx="slam"><span class="ic vi" data-ic="list"></span>Resume.</div>
+        <div data-in="9.4" data-fx="slam"><span class="ic pk" data-ic="search"></span>Busca.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · demo en la ventana de Outlook -->
+  <section class="scene" id="s5" data-in="10.2" data-out="38.6" data-fx="fade">
+    <div id="cam">
+    <div class="win" data-in="10.2" data-fx="up">
+      <div class="bar"><div class="olk">O</div>Outlook<div class="search"><span class="ic" data-ic="search"></span>Buscar</div></div>
+      <div class="cols">
+        <div class="nav">
+          <div class="on">Bandeja de entrada <span>862</span></div>
+          <div id="drafts">Borradores <span class="badge" id="dn">21</span></div>
+          <div>Elementos enviados</div>
+          <div>Elementos eliminados</div>
+          <div>Archivo</div>
+        </div>
+        <div class="midc">
+          <div data-in="10.2" data-out="21.4" data-fx="fade" data-gone>
+            <h4>Prioritarios</h4>
+            <div class="mail sel"><b>William Zambrano</b><p>Re: Informe de avance del proyecto</p></div>
+            <div class="mail"><b>Proyecto ETL</b><p>24 mensajes · Entrega final</p></div>
+            <div class="mail"><b>Coordinación académica</b><p>Cronograma de entregas del semestre</p></div>
+            <div class="mail"><b>María López</b><p>Informe de analítica de datos · Q3</p></div>
+            <div class="mail"><b>Club Microsoft</b><p>Workshop: Outlook + Copilot</p></div>
+          </div>
+          <div class="thread" data-in="21.6" data-fx="fade" data-gone-before>
+            <h3>Proyecto ETL · Entrega final</h3><span class="cnt">24 mensajes</span>
+            <div class="tm"><div class="av bl">CP</div><div><b>Carlos Pérez</b>Subí la nueva versión del ETL, revisen la carga…</div></div>
+            <div class="tm"><div class="av vi">ML</div><div><b>María López</b>El dashboard todavía no muestra los datos de octubre…</div></div>
+            <div class="tm"><div class="av pk">WZ</div><div><b>William Zambrano</b>Propongo entregar el viernes 28 y revisar el lunes…</div></div>
+            <div class="tm"><div class="av bl">CP</div><div><b>Carlos Pérez</b>De acuerdo, yo valido los datos de prueba…</div></div>
+            <div class="tm"><div class="av vi">ML</div><div><b>María López</b>¿Quién prepara la presentación final?</div></div>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="ph"><div class="logo sm"></div>Copilot</div>
+          <div class="msgs">
+            <div class="hello" data-in="10.6" data-out="12.8" data-fx="fade" data-gone>¿En qué puedo ayudarte?</div>
+            <!-- Redacta -->
+            <div class="you" data-in="12.9" data-out="21.4" data-gone data-gone-before>Redacta un correo a William pidiendo el informe antes del viernes</div>
+            <div class="bot dots" data-in="13.1" data-out="13.6" data-gone data-gone-before><i></i><i></i><i></i></div>
+            <div class="bot" data-in="13.6" data-out="17.2" data-gone data-gone-before><span data-type="13.7" data-cps="115"><b>Asunto:</b> Solicitud de actualización del informe
+
+Hola, William:
+Espero que estés muy bien. Te escribo para pedirte la versión actualizada del informe antes del viernes, ya que la necesitamos para la revisión final.
+
+Quedo atento a tus comentarios.
+Saludos,
+Anthony</span></div>
+            <div class="chips" data-in="16.1" data-out="17.2" data-gone data-gone-before><div class="chip"><span class="ic" data-ic="tie"></span>Más formal</div><div class="chip" id="chipShort"><span class="ic" data-ic="scissors"></span>Más breve</div><div class="chip"><span class="ic" data-ic="smile"></span>Amigable</div></div>
+            <div class="bot" id="draft" data-in="17.3" data-out="21.4" data-gone data-gone-before><span data-type="17.4" data-cps="110"><b>Asunto:</b> Informe actualizado
+
+Hola, William: ¿me compartes el informe actualizado antes del viernes? ¡Gracias!
+Anthony</span></div>
+            <div class="you" data-in="19.0" data-out="21.4" data-gone data-gone-before>Envíamelo</div>
+            <div class="bot ok" data-in="19.4" data-out="21.4" data-gone data-gone-before><span class="ic" data-ic="check"></span>Listo: quedó en <b>Borradores</b> para que lo revises y lo envíes tú.</div>
+            <!-- Resume -->
+            <div class="you" data-in="23.7" data-out="30.4" data-gone data-gone-before>Resume esta conversación</div>
+            <div class="bot dots" data-in="23.9" data-out="24.3" data-gone data-gone-before><i></i><i></i><i></i></div>
+            <div class="bot" data-in="24.3" data-out="30.4" data-gone data-gone-before style="white-space:normal"><b style="font-size:21px">Resumen · 24 mensajes, 3 personas</b>
+              <div class="sec" data-in="24.6"><span class="ic bl" data-ic="check"></span><div><b>Decisión</b><p>Entregar el ETL el viernes 28.</p></div></div>
+              <div class="sec" data-in="25.4"><span class="ic pk" data-ic="clock"></span><div><b>Pendiente</b><p>El dashboard no muestra octubre. Falta definir quién presenta.</p></div></div>
+              <div class="sec" data-in="26.2"><span class="ic vi" data-ic="arrow"></span><div><b>Próximo paso</b><p>Carlos valida los datos de prueba; revisión el lunes.</p></div></div>
+            </div>
+            <!-- Busca -->
+            <div class="you" data-in="32.6" data-out="38.6" data-gone data-gone-before>¿Quién me envió información sobre analítica de datos?</div>
+            <div class="bot dots" data-in="32.8" data-out="33.2" data-gone data-gone-before><i></i><i></i><i></i></div>
+            <div class="bot" data-in="33.2" data-gone-before style="white-space:normal;padding-bottom:10px">Encontré <b>3 correos</b>:</div>
+            <div class="res" data-in="33.6" data-gone-before><div class="av vi">ML</div><div><b>María López</b>Informe de <mark>analítica de datos</mark> · Q3</div><span>18 nov</span></div>
+            <div class="res" data-in="34.0" data-gone-before><div class="av bl">CP</div><div><b>Carlos Pérez</b>Dashboard y <mark>analítica de datos</mark> del ETL</div><span>12 nov</span></div>
+            <div class="res" data-in="34.4" data-gone-before><div class="av pk">CA</div><div><b>Coordinación académica</b>Taller de <mark>analítica de datos</mark></div><span>5 nov</span></div>
+          </div>
+          <div class="inp"><span id="typing"></span></div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="cap" data-in="10.6" data-out="21.4"><span class="ic bl" data-ic="pen"></span>Redacta <small>y ajusta el tono</small></div>
+    <div class="cap" data-in="21.6" data-out="30.4"><span class="ic vi" data-ic="list"></span>Resume <small>hilos de decenas de correos</small></div>
+    <div class="cap" data-in="30.6"><span class="ic pk" data-ic="search"></span>Busca <small>preguntando, sin filtros</small></div>
+  </section>
+
+  <!-- 6 · y mucho más -->
+  <section class="scene" data-in="38.7" data-out="43.1" data-fx="fade">
+    <div class="center"><div class="mid" data-in="38.8" data-fx="slam">Y mucho <span class="grad">más</span>.</div></div>
+    <div class="pr" style="left:140px;top:150px" data-in="39.2" data-fx="pop"><span class="ic" data-ic="spark"></span>¿Qué me he perdido hoy?</div>
+    <div class="pr" style="right:150px;top:200px" data-in="39.5" data-fx="pop"><span class="ic" data-ic="check"></span>Extrae las tareas pendientes</div>
+    <div class="pr" style="left:220px;top:700px" data-in="39.8" data-fx="pop"><span class="ic" data-ic="mail"></span>¿Qué correos requieren mi atención?</div>
+    <div class="pr" style="right:200px;top:760px" data-in="40.1" data-fx="pop"><span class="ic" data-ic="tie"></span>Hazla más profesional</div>
+    <div class="pr" style="left:560px;top:880px" data-in="40.4" data-fx="pop"><span class="ic" data-ic="clock"></span>¿Qué reuniones tengo mañana?</div>
+    <div class="pr" style="left:620px;top:60px" data-in="40.7" data-fx="pop"><span class="ic" data-ic="arrow"></span>Redacta un seguimiento</div>
+  </section>
+
+  <!-- 7 · cierre -->
+  <section class="scene" data-in="43.2" data-fx="fade">
+    <div class="center">
+      <div class="subt" style="font-size:40px;margin:0 0 22px" data-in="43.4">Hablemos de</div>
+      <div style="display:flex;align-items:center;gap:26px" data-in="43.8" data-fx="pop"><div class="logo"></div><div class="big">Copilot <em>en Outlook</em></div></div>
+      <div class="ms" data-in="44.5" style="margin-top:40px"><i><b></b><b></b><b></b><b></b></i>Microsoft</div>
+    </div>
+  </section>
+
+  <div class="fly" id="fly"><b>[Borrador]</b> William Zambrano<br>Informe actualizado</div>
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l16 10-7 1.5L9.5 21z" fill="#fff" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  <div id="ripple"></div>
+</div>
+
+<script>
+const DUR = 47;
+const stage = document.getElementById('stage');
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = x => 1 - Math.pow(1 - x, 3);
+const inout = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const back = x => 1 + 2.7 * Math.pow(x - 1, 3) + 1.7 * Math.pow(x - 1, 2); // rebote suave
+const lerp = (a, b, p) => a + (b - a) * p;
+const seg = (t, a, d) => ease(clamp((t - a) / d));
+
+// íconos SVG (trazos estilo Lucide)
+const ICONS = {
+  pen: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>',
+  tie: '<path d="M9 3h6l-1.5 3 2.5 11-4 4-4-4 2.5-11z"/>',
+  scissors: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/>',
+  smile: '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>',
+};
+document.querySelectorAll('[data-ic]').forEach(el => el.innerHTML = `<svg viewBox="0 0 24 24">${ICONS[el.dataset.ic]}</svg>`);
+
+const typed = [...document.querySelectorAll('[data-type]')].map(el => ({el, html: el.innerHTML, t0: +el.dataset.type, cps: +el.dataset.cps}));
+const PROMPTS = [
+  {t0: 11.0, t1: 12.6, text: 'Redacta un correo a William pidiendo el informe antes del viernes'},
+  {t0: 18.3, t1: 18.8, text: 'Envíamelo'},
+  {t0: 22.8, t1: 23.5, text: 'Resume esta conversación'},
+  {t0: 31.0, t1: 32.4, text: '¿Quién me envió información sobre analítica de datos?'},
+];
+// cámara: [t, zoom, x, y] — acerca la vista al panel o al hilo
+const CAM = [[0, 1, 0, 0], [10.8, 1, 0, 0], [11.6, 1.18, -390, -60], [18.9, 1.18, -390, -60], [19.6, 1, 0, 0], [21.6, 1, 0, 0],
+  [22.1, 1.15, 260, -50], [22.2, 1.15, 260, -50], [22.75, 1.18, -390, -60], [29.8, 1.18, -390, -60], [30.6, 1.05, -60, 0],
+  [31.2, 1.2, -400, -70], [36.5, 1.2, -400, -70], [38.6, 1.12, -200, -35]];
+
+function sliceHTML(html, n) {
+  let out = '', c = 0;
+  for (let i = 0; i < html.length && c < n; i++) {
+    if (html[i] === '<') { const j = html.indexOf('>', i); out += html.slice(i, j + 1); i = j; continue; }
+    out += html[i]; c++;
+  }
+  return out;
+}
+function rel(el) {
+  const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect(), k = s.width / 1920;
+  return {x: (r.left - s.left) / k, y: (r.top - s.top) / k, w: r.width / k, h: r.height / k};
+}
+
+function seek(t) {
+  b1.style.transform = `translate(${Math.sin(t * .35) * 110}px,${Math.cos(t * .3) * 70}px)`;
+  b2.style.transform = `translate(${Math.cos(t * .32) * 100}px,${Math.sin(t * .4) * 80}px)`;
+  b3.style.transform = `translate(${Math.sin(t * .28) * 140}px,${Math.cos(t * .37) * 60}px)`;
+
+  for (const el of document.querySelectorAll('[data-in]')) {
+    const a = +el.dataset.in, o = el.dataset.out ? +el.dataset.out : 1e9, fx = el.dataset.fx || 'rise';
+    const raw = clamp((t - a) / (fx === 'fade' ? .35 : fx === 'slam' ? .4 : .6)), p = ease(raw), q = seg(t, o, .3);
+    el.style.opacity = (fx === 'slam' ? clamp(raw * 3) : p) * (1 - q);
+    if ('goneBefore' in el.dataset || 'gone' in el.dataset)
+      el.style.display = (t < a && 'goneBefore' in el.dataset) || (t > o + .3 && 'gone' in el.dataset) ? 'none' : '';
+    const keep = el.classList.contains('cap') ? 'translateX(-50%) ' : '';
+    el.style.transform = keep + (
+      fx === 'pop' ? `scale(${lerp(.6, 1, back(raw))})` :
+      fx === 'slam' ? `scale(${lerp(2.2, 1, ease(raw))})` :
+      fx === 'spin' ? `scale(${lerp(.2, 1, back(raw))}) rotate(${(1 - p) * -200}deg)` :
+      fx === 'up' ? `translateY(${(1 - p) * 160}px) scale(${lerp(.92, 1, p)})` :
+      fx === 'fade' ? '' : `translateY(${(1 - p) * 40}px)`);
+  }
+
+  for (const x of typed) x.el.innerHTML = sliceHTML(x.html, Math.max(0, Math.floor((t - x.t0) * x.cps)));
+
+  // contador del gancho, con un pequeño temblor al llegar
+  const n = Math.round(862 * ease(clamp((t - .2) / 1.4)));
+  const cnt = document.getElementById('count');
+  cnt.textContent = n;
+  if (t > 1.6 && t < 3.4) cnt.style.transform = `translateX(${Math.sin(t * 60) * 6 * clamp(1 - (t - 1.6) / .5)}px)`;
+
+  // cámara
+  let i = CAM.findIndex(k => k[0] > t); if (i < 0) i = CAM.length; const A = CAM[Math.max(0, i - 1)], B = CAM[Math.min(CAM.length - 1, i)];
+  const cp = B[0] > A[0] ? inout(clamp((t - A[0]) / (B[0] - A[0]))) : 1;
+  document.getElementById('cam').style.transform = `translate(${lerp(A[2], B[2], cp)}px,${lerp(A[3], B[3], cp)}px) scale(${lerp(A[1], B[1], cp)})`;
+
+  const box = document.getElementById('typing');
+  const cur = PROMPTS.find(p => t >= p.t0 - .3 && t < p.t1 + .3);
+  box.innerHTML = cur ? cur.text.slice(0, Math.floor(cur.text.length * clamp((t - cur.t0) / (cur.t1 - cur.t0)))) + '<span class="caret"></span>'
+                      : '<span class="ph2">Enviar un mensaje a Copilot</span>';
+
+  // borrador que vuela a Borradores y contador 21 → 22
+  const dn = document.getElementById('dn'), fly = document.getElementById('fly');
+  dn.textContent = t >= 20.6 ? 22 : 21;
+  const pulse = clamp(1 - Math.abs(t - 20.8) / .35);
+  dn.style.cssText = `transform:scale(${1 + pulse * .7});background:${pulse ? '#0f6cbd' : 'transparent'};color:${pulse ? '#fff' : ''}`;
+  const fp = clamp((t - 19.7) / .9);
+  if (fp > 0 && fp < 1) {
+    const d = rel(document.getElementById('draft')), dr = rel(document.getElementById('drafts')), e = inout(fp);
+    fly.style.left = lerp(d.x + 40, dr.x + 10, e) + 'px';
+    fly.style.top = lerp(d.y + 20, dr.y - 10, e) - Math.sin(e * Math.PI) * 140 + 'px';
+    fly.style.transform = `scale(${lerp(1, .5, e)}) rotate(${Math.sin(e * Math.PI) * -8}deg)`;
+    fly.style.opacity = fp < .85 ? 1 : (1 - fp) / .15;
+  } else fly.style.opacity = 0;
+
+  // cursor que pulsa "Más breve"
+  const cursor = document.getElementById('cursor'), rip = document.getElementById('ripple'), chip = document.getElementById('chipShort');
+  if (t > 16.2 && t < 17.4) {
+    const b = rel(chip), tx = b.x + b.w * .6, ty = b.y + b.h * .6, e = ease(clamp((t - 16.2) / .6));
+    cursor.style.left = lerp(tx + 220, tx, e) + 'px';
+    cursor.style.top = lerp(ty + 160, ty, e) + 'px';
+    cursor.style.opacity = clamp((t - 16.2) / .2) * (1 - clamp((t - 17.1) / .25));
+    const press = clamp(1 - Math.abs(t - 16.9) / .12);
+    cursor.style.transform = `scale(${1 - press * .2})`;
+    chip.style.transform = `scale(${1 - press * .1})`;
+    chip.style.background = t > 16.9 ? '#7c3aed' : ''; chip.style.color = t > 16.9 ? '#fff' : '';
+    const rp = clamp((t - 16.9) / .5);
+    rip.style.left = tx + 'px'; rip.style.top = ty + 'px';
+    rip.style.opacity = t > 16.9 ? 1 - rp : 0;
+    rip.style.transform = `scale(${lerp(.3, 1.6, rp)})`;
+  } else { cursor.style.opacity = 0; rip.style.opacity = 0; }
+}
+
+function fit() { const s = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = `translate(-50%,-50%) scale(${s})`; }
+addEventListener('resize', fit); fit();
+window.seek = seek; window.DUR = DUR;
+
+if (!location.search.includes('render')) {
+  const start = performance.now() - (parseFloat(location.hash.slice(1)) || 0) * 1000;
+  (function loop() { seek(((performance.now() - start) / 1000) % DUR); requestAnimationFrame(loop); })();
+} else seek(0);
+</script>
+</body>
+</html>

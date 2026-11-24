@@ -17,12 +17,14 @@ html,body{height:100%;background:#020a1c;overflow:hidden;font-family:"Segoe UI",
 .b1{width:520px;height:520px;background:#2b7bff;left:-120px;top:-100px}
 .b2{width:460px;height:460px;background:#a259ff;right:-80px;bottom:-120px;animation-delay:-5s}
 @keyframes float{to{transform:translate(70px,50px) scale(1.15)}}
-.slide{position:absolute;inset:0;padding:96px 120px 110px;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
-.slide.active{opacity:1;visibility:visible}
+.slide{position:absolute;inset:0;padding:96px 120px 110px;opacity:0;visibility:hidden;transform:scale(1.05);filter:blur(8px);transition:opacity .7s,visibility .7s,transform 1s cubic-bezier(.2,.8,.2,1),filter .7s}
+.slide.active{opacity:1;visibility:visible;transform:none;filter:none}
+.slide.leaving{transform:translateX(-90px) scale(.96);filter:blur(8px)}
 .eyebrow{font-size:26px;letter-spacing:.22em;font-weight:700;color:var(--cyan);text-transform:uppercase}
 h1,h2{font-weight:800;letter-spacing:-.02em;line-height:1.05}
 h2{font-size:84px;margin-top:18px}
-.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad{background:linear-gradient(100deg,#4fd8ff,#2b7bff,#a259ff,#ff5c8a,#a259ff,#2b7bff,#4fd8ff) 0 0/200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:200% 0}}
 .sub{font-size:36px;color:var(--mut);margin-top:22px}
 .foot{position:absolute;left:120px;right:120px;bottom:40px;display:flex;justify-content:space-between;font-size:22px;color:var(--mut)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:28px;backdrop-filter:blur(8px)}
@@ -36,8 +38,26 @@ h2{font-size:84px;margin-top:18px}
 .active .pop{animation-name:pop}
 .active .fade{animation-name:fade}
 .active .left{animation-name:fromleft}
-@keyframes rise{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:none}}
-@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(50px);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}70%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:none}}
+/* íconos que se dibujan y tarjetas con destello */
+.active .ico svg *{stroke-dasharray:100;stroke-dashoffset:100;animation:draw 1.1s ease forwards;animation-delay:calc(var(--i,0)*.14s + .5s)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.card{position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,#ffffff26 50%,transparent 65%);transform:translateX(-100%)}
+.active .card.a::after{animation:sweep 1.4s ease forwards;animation-delay:calc(var(--i,0)*.14s + .7s)}
+@keyframes sweep{to{transform:translateX(100%)}}
+.trio .card{transition:transform .3s,border-color .3s}
+.trio .card:hover{transform:translateY(-8px);border-color:#4fd8ff88}
+.ic{width:1em;height:1em;vertical-align:-.12em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ask .ic{margin-right:10px}
+.sol small{display:inline-flex;align-items:center;gap:8px}
+.sol .si{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(140deg,#2b7bff,#a259ff);margin-bottom:14px}
+.sol .si svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.quiz .stp.on .num{animation:ring 1s ease}
+@keyframes ring{0%{box-shadow:0 0 0 0 #4fd8ffaa}100%{box-shadow:0 0 0 26px #4fd8ff00}}
+#hud button svg,#cover .play svg{width:18px;height:18px;fill:currentColor;vertical-align:middle}
+#cover .play svg{width:46px;height:46px;margin-left:6px}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes fromleft{from{opacity:0;transform:translateX(-80px)}to{opacity:1;transform:none}}
 
@@ -88,6 +108,21 @@ h2{font-size:84px;margin-top:18px}
 body:hover #hud{opacity:.85}
 #hud button{background:#0d234fcc;color:#fff;border:1px solid #ffffff33;border-radius:10px;padding:8px 14px;font-size:15px;cursor:pointer}
 #hud button:hover{background:#2b7bff}
+
+/* intro en video */
+#intro{position:fixed;inset:0;z-index:20;background:#000;transition:opacity .6s,visibility .6s}
+#intro.gone{opacity:0;visibility:hidden}
+#movie{width:100%;height:100%;object-fit:contain}
+#cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;cursor:pointer;background:radial-gradient(900px 600px at 50% 40%,#14357a,#06122b)}
+#cover.off{display:none}
+#cover .play{width:110px;height:110px;border-radius:50%;border:0;background:var(--grad);color:#fff;font-size:44px;cursor:pointer;box-shadow:0 20px 60px #2b7bff66}
+#cover h2{font-size:56px}
+#cover p{font-size:22px;color:var(--mut)}
+#cover small{font-size:16px;color:var(--mut);opacity:.7}
+#ibar{position:absolute;right:24px;bottom:22px;display:flex;gap:10px;z-index:2}
+#ibar button{display:inline-flex;align-items:center;gap:8px;background:#0d234fcc;color:#fff;border:1px solid #ffffff33;border-radius:99px;padding:10px 20px;font-size:16px;cursor:pointer}
+#ibar button:hover{background:#2b7bff}
+#ibar svg{width:18px;height:18px;fill:currentColor}
 </style>
 </head>
 <body>
@@ -101,7 +136,7 @@ body:hover #hud{opacity:.85}
     <div class="eyebrow a fade" style="--i:0">Club Microsoft · Workshop</div>
     <h1 class="a" style="--i:1">Outlook<br><span class="grad">+ Copilot</span></h1>
     <p class="date a" style="--i:3">Tu asistente de IA para redactar, resumir y buscar correos. <b>Disponible desde enero de 2024</b>.</p>
-    <div class="who a" style="--i:4"><b>¿Para quién?</b><span class="pill">Administración de Empresas y Negocios</span><span class="pill">Derecho</span><span class="pill">Ingeniería</span><span class="pill">Arquitectura</span><span class="pill">Medicina</span></div>
+    <div class="who a" style="--i:4"><b>¿Para quién?</b><span class="pill a pop" style="--i:5">Administración de Empresas y Negocios</span><span class="pill a pop" style="--i:6">Derecho</span><span class="pill a pop" style="--i:7">Ingeniería</span><span class="pill a pop" style="--i:8">Arquitectura</span><span class="pill a pop" style="--i:9">Medicina</span></div>
   </div>
   <div class="r a pop" style="--i:2"><img src="Copilot-Outlook-Header.webp" alt="Outlook y Copilot"></div>
 </section>
@@ -116,7 +151,7 @@ body:hover #hud{opacity:.85}
     <div class="card a" style="--i:4"><div class="ico mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="dot" id="unread">0</span></div><h3>Leer</h3><p>Un hilo con decenas de mensajes y llegas tarde a la conversación.</p></div>
     <div class="card a" style="--i:5"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></div><h3>Responder</h3><p>Redactar, ajustar el tono y revisar… una y otra vez.</p></div>
   </div>
-  <p class="ask a" style="--i:7">✋ Levanta la mano: ¿cuántos correos sin leer tienes ahora mismo?</p>
+  <p class="ask a" style="--i:7"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></svg>Levanta la mano: ¿cuántos correos sin leer tienes ahora mismo?</p>
   <div class="foot"><span>Club Microsoft · Outlook + Copilot</span><span>02 / 04</span></div>
 </section>
 
@@ -125,9 +160,9 @@ body:hover #hud{opacity:.85}
   <div class="imgwrap"><img src="Copilot-for-Outlook.webp" alt="Copilot + Outlook"></div>
   <div class="t a" style="--i:4">Te presentamos a…</div>
   <div class="sol">
-    <div class="card a" style="--i:9"><small>Buscar →</small><h3>Pregunta, no rebusques</h3><p>«¿Qué me escribió Carlos sobre el presupuesto?»</p></div>
-    <div class="card a" style="--i:10"><small>Leer →</small><h3>Resume</h3><p>Hilos largos y adjuntos en puntos clave y pendientes.</p></div>
-    <div class="card a" style="--i:11"><small>Responder →</small><h3>Redacta</h3><p>Borradores con una instrucción y ajuste de tono.</p></div>
+    <div class="card a" style="--i:9"><div class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><small>Buscar</small><h3>Pregunta, no rebusques</h3><p>«¿Qué me escribió Carlos sobre el presupuesto?»</p></div>
+    <div class="card a" style="--i:10"><div class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div><small>Leer</small><h3>Resume</h3><p>Hilos largos y adjuntos en puntos clave y pendientes.</p></div>
+    <div class="card a" style="--i:11"><div class="si"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div><small>Responder</small><h3>Redacta</h3><p>Borradores con una instrucción y ajuste de tono.</p></div>
   </div>
   <p class="quote a" style="--i:13">La IA no te quita el trabajo: te quita lo repetitivo.</p>
 </section>
@@ -147,7 +182,13 @@ body:hover #hud{opacity:.85}
 
 </div>
 
-<div id="hud"><button id="prev">◀</button><button id="next">▶</button><button id="fs">⛶</button></div>
+<div id="intro">
+  <video id="movie" src="copilot-outlook-intro.mp4" playsinline preload="auto"></video>
+  <div id="cover"><button class="play" aria-label="Reproducir video de apertura"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><h2>Outlook <span class="grad">+ Copilot</span></h2><p>Pulsa para iniciar la presentación · video con sonido</p><small>S para saltar el video · F pantalla completa</small></div>
+  <div id="ibar"><button id="ifs" aria-label="Ver en pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6v2H5v4zm12-6h6v6h-2V5h-4zM3 15h2v4h4v2H3zm16 0h2v6h-6v-2h4z"/></svg><span>Pantalla completa</span></button><button id="skip">Saltar introducción ›</button></div>
+</div>
+
+<div id="hud"><button id="prev" aria-label="Anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5v14L5 12z"/></svg></button><button id="next" aria-label="Siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><button id="fs" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6v2H5v4zm12-6h6v6h-2V5h-4zM3 15h2v4h4v2H3zm16 0h2v6h-6v-2h4z"/></svg></button></div>
 
 <script>
 const stage=document.getElementById('stage'),slides=[...document.querySelectorAll('.slide')],prog=document.getElementById('prog');
@@ -155,19 +196,31 @@ let cur=0,timers=[];
 function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform=`translate(-50%,-50%) scale(${s})`}
 addEventListener('resize',fit);fit();
 const later=(f,t)=>timers.push(setTimeout(f,t));
+document.querySelectorAll('.ico svg *').forEach(e=>e.setAttribute('pathLength',100));
 function clear(){timers.forEach(clearTimeout);timers=[]}
 const hooks={2(){const u=document.getElementById('unread');let n=0;(function t(){n+=Math.ceil(Math.random()*9);if(n>=47)n=47;u.textContent=n;if(n<47)later(t,60)})()}};
 function go(n){n=Math.max(0,Math.min(slides.length-1,n));clear();document.querySelectorAll('.stp').forEach(e=>e.classList.remove('on'));
- slides[cur].classList.remove('active');cur=n;
+ const old=slides[cur];old.classList.remove('active');if(old!==slides[n]){old.classList.add('leaving');setTimeout(()=>old.classList.remove('leaving'),800)}cur=n;
  void slides[cur].offsetWidth;slides[cur].classList.add('active');
  prog.style.width=((cur+1)/slides.length*100)+'%';history.replaceState(null,'','#'+(cur+1));hooks[cur+1]&&hooks[cur+1]()}
-const next=()=>{const s=slides[cur].querySelector('.stp:not(.on)');s?s.classList.add('on'):go(cur+1)},prev=()=>go(cur-1);
+const intro=document.getElementById('intro'),movie=document.getElementById('movie'),cover=document.getElementById('cover');
+const inIntro=()=>!intro.classList.contains('gone');
+function startVideo(){cover.classList.add('off');movie.currentTime=0;movie.play().catch(()=>cover.classList.remove('off'))}
+function endIntro(){movie.pause();intro.classList.add('gone');go(0)}
+function showIntro(){movie.pause();cover.classList.remove('off');intro.classList.remove('gone')}
+cover.onclick=startVideo;document.getElementById('skip').onclick=endIntro;movie.onended=endIntro;
+movie.onclick=()=>movie.paused?movie.play():movie.pause();
+if(parseInt(location.hash.slice(1))>1)intro.classList.add('gone'); // con #2..#4 se entra directo a esa diapositiva
+const next=()=>{if(inIntro())return cover.classList.contains('off')?endIntro():startVideo();const s=slides[cur].querySelector('.stp:not(.on)');s?s.classList.add('on'):go(cur+1)},prev=()=>{if(inIntro())return;cur===0?showIntro():go(cur-1)};
 addEventListener('keydown',e=>{
+ if((e.key==='s'||e.key==='S')&&inIntro())return endIntro();
  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();next()}
  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev()}
  else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
  else if(e.key==='f'||e.key==='F')tfs()});
 function tfs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+document.getElementById('ifs').onclick=e=>{e.stopPropagation();tfs()};
+addEventListener('fullscreenchange',()=>{document.querySelector('#ifs span').textContent=document.fullscreenElement?'Salir de pantalla completa':'Pantalla completa'});
 document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.getElementById('fs').onclick=tfs;
 let sx=null;addEventListener('touchstart',e=>sx=e.touches[0].clientX);
 addEventListener('touchend',e=>{if(sx===null)return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)d<0?next():prev();sx=null});
